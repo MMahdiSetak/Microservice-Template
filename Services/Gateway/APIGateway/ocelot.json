@@ -1,0 +1,74 @@
+﻿{
+  "$schema": "https://json.schemastore.org/ocelot.json",
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api{url}",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "payment",
+      "ServiceName": "payment",
+      "UpstreamPathTemplate": "/payment{url}",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api{url}",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "product",
+      "ServiceName": "product",
+      "UpstreamPathTemplate": "/product{url}",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api{url}",
+      "DownstreamScheme": "http",
+      "SwaggerKey": "report",
+      "ServiceName": "report",
+      "UpstreamPathTemplate": "/report{url}",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+    "ServiceDiscoveryProvider": {
+      "Host": "localhost",
+      "Port": 7000,
+      "Type": "Consul"
+    }
+  },
+  "SwaggerEndPoints": [
+    {
+      "Key": "payment",
+      "TransformByOcelotConfig": false,
+      "Config": [
+        {
+          "Name": "Payment API",
+          "Version": "v1",
+          "TakeServersFromDownstreamService": true,
+          "Service": {
+            "Name": "payment",
+            "Path": "/swagger/v1/swagger.json"
+          }
+        }
+      ]
+    },
+    {
+      "Key": "product",
+      "TransformByOcelotConfig": false,
+      "Config": [
+        {
+          "Name": "Product API",
+          "Version": "v1",
+          "TakeServersFromDownstreamService": true,
+          "Service": {
+            "Name": "product",
+            "Path": "/swagger/v1/swagger.json"
+          }
+        }
+      ]
+    }
+  ]
+}
